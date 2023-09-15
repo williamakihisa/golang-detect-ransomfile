@@ -6,12 +6,10 @@ import (
 	"strings"
 	"io/ioutil"
 	"encoding/json"
-//        "syscall"
 	"path/filepath"
 	"github.com/fsnotify/fsnotify"
         ps "github.com/mitchellh/go-ps"
         "log"
-//        "github.com/fsnotify/fsevents"
 )
 
 //
@@ -49,10 +47,7 @@ func main() {
 			if event.Op&fsnotify.Rename == fsnotify.Rename {
                            fmt.Printf("<< WARNING KILL THIS!")
                            fmt.Printf("%+q", event)
-   			   //pid := syscall.Getgid()
-			   //fmt.Println("parent process ID:", pid)
 			   for _, infect := range blacklist {
-// 				panic(infect)
   				listproc(infect)
 			   }
 			}	
@@ -90,11 +85,10 @@ func listproc(infect string){
      	process = processList[x]
         inspect := strings.ToLower(strings.Trim(process.Executable(), " "))
         infectproc := strings.ToLower(strings.Trim(infect, " "))
-//        log.Println(inspect+" -- "+infectproc)
         if (strings.Contains(inspect, infectproc)){
+           //do other this for this process, on next update will be killed and enhance analyze other process using Machine Learning
    	   log.Println("Dangerouse Process found : %d\t%s\n",process.Pid(),process.Executable())
         }
-  	//log.Printf("%d\t%s\n",process.Pid(),process.Executable())
      }
 
 }
