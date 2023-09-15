@@ -1,14 +1,12 @@
 package main
  
 import (
-//        "fmt"
 	"log"
 	"strings"
 	"os"
 	"math/rand"
 	"path/filepath"
 	"time"
-//	"strconv"
 )
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -28,7 +26,7 @@ func main() {
         }
         rand.Seed(time.Now().UnixNano())
         filefound := strings.Split(files[0]," ")
-        oldLocation := filefound[0] //strings.Split(filefound[0]," ")
+        oldLocation := filefound[0] 
         newLocation := "/etc/test-"+RandStringBytesMask(rand.Intn(30 - 10) + 10)
         rand.Seed(time.Now().UnixNano())
         log.Println(rand.Intn(30 - 10) + 10)
