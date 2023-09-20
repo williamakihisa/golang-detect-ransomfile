@@ -7,7 +7,7 @@ building simple detector based on blacklist and whitelist process that will be f
 
 Update Progress : Completed Phase 1 Project
 
-how to use :
+how to use (protector):
 1. copy all files into any path as you want,
 2. requirement golang-go with minimum 1.16.x version
 3. make sure golang running, check with : go version
@@ -24,7 +24,16 @@ how to use :
 14. for background process : nohup ./"app_name"
 15. close SSH session
 16. done - the protector will always detect any change especially mv or changes in /etc or any core file system
-    
+
+how to simulate ransomware (maskingfile) :
+1. copy maskingfile.go to different path
+2. go mod init v1 or other app name
+3. go mod tidy
+4. go build
+5. touch /etc/test123.txt
+6. run v1 or appname
+7. this process should be killed by detectup if the detectup already running
+   
 
 Phase 2 Project :
 
