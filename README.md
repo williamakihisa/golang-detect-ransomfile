@@ -36,9 +36,10 @@ how to simulate ransomware (maskingfile) :
    
 
 Phase 2 Project :
-
-using Machine Learning to analyze process that could be hazardous for systems
+create API for pooling all protector services in all servers
+create UI in php/html for monitoring status protector
+fix update : detection.json for event monitoring
 
 Phase 3 Project :
-
+using Machine Learning to analyze process that could be hazardous for systems
 create AI to memorize events and preventing infectious programs.
