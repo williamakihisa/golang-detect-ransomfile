@@ -1,6 +1,6 @@
 # golang-detect-ransomfile
 This is the project to build an anti ransomware apps that could protect every OS important files
-
+NEW UPDATED : ON PROGRESS DETECTOR FOR WINDOWS VERSION works on all windows system desktop or server
 Phase 1 Project :
 
 building simple detector based on blacklist and whitelist process that will be filtered by detector go script
@@ -39,6 +39,7 @@ Phase 2 Project :
 create API for pooling all protector services in all servers
 create UI in php/html for monitoring status protector
 fix update : detection.json for event monitoring
+
 
 Phase 3 Project :
 using Machine Learning to analyze process that could be hazardous for systems
