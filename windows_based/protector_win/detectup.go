@@ -79,6 +79,7 @@ func main() {
 
                            fmt.Printf("<< ALERT SUSPICIOUS PROCESS!!")
                            fmt.Println("%+q", event)
+
 			   pidInfect := 0
 			   for _, infect := range blacklist {
   				pidInfect = listproc(infect, 0)
@@ -186,13 +187,15 @@ func listproc(infect string, typeproc int) int{
     	log.Println("ps.Processes() failed, system not identified")
         return 0
      }
-
+		 log.Println("%q infect >> ",infect)
      var tmpWhite []string
      y := 0
 
      for x := range processList {
 			var process ps.Process
      	process = processList[x]
+			// log.Println("%q",process)
+			// log.Println("%q exec = ",process.Executable()," pid = ",process.Pid())
         inspect := strings.ToLower(strings.Trim(process.Executable(), " "))
         infectproc := strings.ToLower(strings.Trim(infect, " "))
         if (strings.Contains(inspect, infectproc)){
@@ -208,6 +211,7 @@ func listproc(infect string, typeproc int) int{
    if typeproc != 0 {
       writeJSONToken(tmpWhite,"whitelist.json")
    }
+
    return pid
 }
 
@@ -239,11 +243,13 @@ func getDiffProcess(whitelist []string) []int{
             }
 	}
 	if (safestatus == 0) {
-           updateBlacklist(inspect)
+		log.Println(inspect," -- ",process.Pid())
+     updateBlacklist(inspect)
 	   diffArr = append(diffArr, process.Pid())
 	   event_notif = event_notif + "-(" + inspect + ":" + strconv.Itoa(process.Pid()) + ")"
         }
      }
+		 // panic(diffArr)
      return diffArr
 }
 
