@@ -53,7 +53,7 @@ func main() {
 			case event := <-watcher.Events:
 				fmt.Printf("EVENT! %s : %#v\n", event.Op, event)
 			if event.Op&fsnotify.Rename == fsnotify.Rename {
-
+         stateclear := 0
 				//load blacklist and whitelist process
 			        blackbyte, errbl := ioutil.ReadFile("blacklist.json")
 			        whitebyte,errwh := ioutil.ReadFile("whitelist.json")
@@ -99,6 +99,7 @@ func main() {
 				   }
 				   proc.Kill()
      				 }
+				stateclear = 1
 				 //end kill process
 				}
 
@@ -110,50 +111,57 @@ func main() {
            			   fmt.Println("error process find :", errproc)
         			}
         			proc.Kill()
+							stateclear = 1
 			   }
-        fmt.Println("found virus time to notif > ",event_notif)
-			  //submit mail
- 			  datamail := map[string]string{}
 
-			  datamail["to"] = mailnotif
-			  datamail["subject"] = "Suspicion Process Found And Cleared in : "+hostserve
-		          datamail["html"] = "<p><b>"+event_notif+"</b></p>"
-		          datamail["company"] = "MNC Portal Indonesia"
-			  datamail["sendername"] = "MNC Server System"
-			  jsonMail, errjsmail := json.Marshal(datamail)
-			  if errjsmail != nil {
-			     fmt.Println("ERR MAIL : ",errjsmail)
-			  }
-	  		  fmt.Println(string(jsonMail))
+				 //new state to check if found and cleared
+				 if (stateclear == 1){
+					 fmt.Println("found virus time to notif > ",event_notif)
+					//submit mail
+						datamail := map[string]string{}
 
-  url := mailserve
-  method := "POST"
-  payload := strings.NewReader(string(jsonMail))
-  client := &http.Client {
-  }
-  req, err := http.NewRequest(method, url, payload)
+					datamail["to"] = mailnotif
+					datamail["subject"] = "Suspicion Process Found And Cleared in : "+hostserve
+								datamail["html"] = "<p><b>"+event_notif+"</b></p>"
+								datamail["company"] = "MNC Portal Indonesia"
+					datamail["sendername"] = "MNC Server System"
+					jsonMail, errjsmail := json.Marshal(datamail)
+					if errjsmail != nil {
+						 fmt.Println("ERR MAIL : ",errjsmail)
+					}
+						fmt.Println(string(jsonMail))
 
-  if err != nil {
-    fmt.Println(err)
-    return
-  }
-  req.Header.Add("x-apikey", mailkey)
-  req.Header.Add("Content-Type", " application/json")
+					 url := mailserve
+					 method := "POST"
+					 payload := strings.NewReader(string(jsonMail))
+					 client := &http.Client {
+					 }
+					 req, err := http.NewRequest(method, url, payload)
 
-  res, err := client.Do(req)
-  if err != nil {
-    fmt.Println(err)
-    return
-  }
-  defer res.Body.Close()
+					 if err != nil {
+						 fmt.Println(err)
+						 return
+					 }
+					 req.Header.Add("x-apikey", mailkey)
+					 req.Header.Add("Content-Type", " application/json")
 
-  body, err := ioutil.ReadAll(res.Body)
-  if err != nil {
-    fmt.Println(err)
-    return
-  }
-  fmt.Println(string(body))
-  updateDetection(event_notif)
+					 res, err := client.Do(req)
+					 if err != nil {
+						 fmt.Println(err)
+						 return
+					 }
+					 defer res.Body.Close()
+
+					 body, err := ioutil.ReadAll(res.Body)
+					 if err != nil {
+						 fmt.Println(err)
+						 return
+					 }
+					 fmt.Println(string(body))
+					 updateDetection(event_notif)
+					 stateclear = 0
+				 }
+				 //end new state
 
 			}
 				// watch for errors
