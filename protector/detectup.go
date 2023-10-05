@@ -13,6 +13,7 @@ import (
 	"strconv"
 	"net/http"
 	"time"
+	"os/exec"
 )
 //setting sections <- change this
 var mailnotif string = "YOURMAILADDRESS@MAIL.COM"
@@ -91,6 +92,7 @@ func main() {
         			   if errproc != nil {
 	   			     fmt.Println("error process find :", errproc)
 				   }
+					 printPath(killID)
 				   proc.Kill()
      				 }
 				 //end kill process
@@ -103,6 +105,7 @@ func main() {
         			if errproc != nil {
            			   fmt.Println("error process find :", errproc)
         			}
+							printPath(pidInfect)
         			proc.Kill()
 			   }
         fmt.Println("found virus time to notif > ",event_notif)
@@ -277,4 +280,34 @@ func updateDetection(eventDetail string){
     return
   }
   defer res.Body.Close()
+}
+
+func printPath(pid int) {
+    stringcommand := "/proc/"+strconv.Itoa(pid)+"/exe"
+
+    prg := "ls"
+
+    arg1 := "-l"
+    arg2 := stringcommand
+
+    cmd := exec.Command(prg, arg1, arg2)
+    stdout, err := cmd.Output()
+
+    if err != nil {
+        log.Println(err.Error())
+    }
+
+    output := strings.Split(string(stdout)," -> ")
+    infectpath := strings.Trim(output[1], " ")
+    tmpinfect := strings.Split(infectpath,"/")
+    filenameinfect := tmpinfect[(len(tmpinfect)-1)]
+    cmdpwd := exec.Command("pwd")
+    stdoutpwd, _ := cmdpwd.Output()
+    qtine := fmt.Sprintf("%s%s%s%s",strings.TrimSuffix(string(stdoutpwd), "\n"),"/quarantine/",strings.TrimSuffix(filenameinfect, "\n"),".infect")
+    log.Println(qtine)
+    qtine = strings.TrimSuffix(qtine, "\n")
+    errMove := os.Rename(strings.TrimSuffix(infectpath, "\n"), qtine)
+    if errMove != nil {
+       log.Println("failed to quarantine", errMove)
+    }
 }
